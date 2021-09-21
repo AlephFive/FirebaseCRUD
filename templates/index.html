@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+    function btn_add() {
+        var id = document.getElementById("note_id").value;
+        var note = document.getElementById("note_content").value;
+        fetch('http://localhost:5000/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "id": id,
+                "note": note
+            })
+        })
+                .then(response => response.json())
+                .then(data => document.getElementById("content").innerHTML = "Created Note with ID: " + id + " CONTENT: " + note)
+                .catch((error) => {
+                    console.error('Error:', error);
+                    document.getElementById("content").innerHTML = "ERROR" + error;
+                });  
+    }
+
+    function btn_read() {
+        var id_var = document.getElementById("note_id").value
+        var url = new URL("http://localhost:5000/read"),
+            params = {'id':id_var}
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        
+        fetch(url)
+            .then(response => response.json())
+                .then(data => document.getElementById("content").innerHTML = "Read Note with ID: " + id_var + " CONTENT: " + data['note'])
+                .catch((error) => {
+                    console.error('Error: ', error);
+                    document.getElementById("content").innerHTML = "ERROR" + error;
+                }); 
+    }
+    function btn_modify() {
+        var id = document.getElementById("note_id").value;
+        var note = document.getElementById("note_content").value;
+        fetch('http://localhost:5000/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "id": id,
+                "note": note
+            })
+        })
+                .then(response => response.json())
+                .then(data => document.getElementById("content").innerHTML = "Modified Note with ID: " + id + " to CONTENT: " + note)
+                .catch((error) => {
+                    console.error('Error:', error);
+                    document.getElementById("content").innerHTML = "ERROR" + error;
+                });
+    }
+    function btn_delete() {
+        var id_var = document.getElementById("note_id").value
+        var url = new URL("http://localhost:5000/delete"),
+            params = {'id':id_var}
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        
+        fetch(url)
+            .then(response => response.json())
+                .then(data => document.getElementById("content").innerHTML = "Deleted Note with ID: " + id_var)
+                .catch((error) => {
+                    console.error('Error: ', error);
+                    document.getElementById("content").innerHTML = "ERROR" + error;
+                }); 
+    }
+    </script>
+</head>
+<body>
+    <label for="note_id">Note ID:</label>
+    <input id="note_id" type="text" value="">
+    <label for="note_content">Note Content:</label>
+    <input id="note_content" type="text" value="">
+
+    <br/>
+    <br/>
+    <br/>
+    <button id="btn_add" onclick="btn_add()">Create</button>
+    <button id="btn_read" onclick="btn_read()">Read</button>
+    <button id="btn_modify" onclick="btn_modify()">Update</button>
+    <button id="btn_delete" onclick="btn_delete()">Delete</button>
+
+    <h2>STATUS:</h2>
+    <p id="content"></p>
+
+
+</body>
+</html>
